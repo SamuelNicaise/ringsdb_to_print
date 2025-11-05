@@ -7,10 +7,15 @@
 import argparse
 import logging as log
 
-import PACKAGENAME
+import sys
+import ringsdb_to_print
 
-def main_PARSERNAME():
-    pass
+
+def main_pdf(url, output):
+    from .printpdf import generate_pdf_from_ringsdb
+
+    generate_pdf_from_ringsdb(url, output)
+
 
 def set_log_level(verbosity):
     verbosity = verbosity.lower()
@@ -31,24 +36,33 @@ def set_log_level(verbosity):
         level=configs[verbosity],
     )
 
+
 def main():
-    parser = argparse.ArgumentParser(prog="PACKAGENAME")
+    parser = argparse.ArgumentParser(prog="ringsdb_to_print")
     parser.add_argument(
         "--version",
         action="version",
-        version=f"{parser.prog} {PACKAGENAME.__version__}",
+        version=f"{parser.prog} {ringsdb_to_print.__version__}",
     )
 
     subparsers = parser.add_subparsers(help="sub-command help")
 
-    PARSERNAME = subparsers.add_parser(
-        "PARSERNAME",
-        help="",
+    pdf = subparsers.add_parser(
+        "pdf",
+        help="Generate printable PDF from RingsDB deck",
         formatter_class=argparse.MetavarTypeHelpFormatter,
     )
-    PARSERNAME.set_defaults(subparser="PARSERNAME")
+    pdf.add_argument("-u", "--url", type=str, required=True, help="RingsDB deck URL")
+    pdf.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        default="output.pdf",
+        help="Output PDF filename [output.pdf]",
+    )
+    pdf.set_defaults(subparser="pdf")
 
-    for subparser in (PARSERNAME,):
+    for subparser in (pdf,):
         subparser.add_argument(
             "-v",
             "--verbosity",
@@ -60,11 +74,12 @@ def main():
     args = parser.parse_args()
     if not hasattr(args, "subparser"):
         parser.print_help()
-    else:
-        set_log_level(args.verbosity)
-        log.debug(f"Args: {str(args)}")
-        if args.subparser == "PARSERNAME":
-            main_PARSERNAME()
+        return
+    set_log_level(args.verbosity)
+    log.debug(f"Args: {str(args)}")
+    if args.subparser == "pdf":
+        main_pdf(args.url, args.output)
+
 
 if __name__ == "__main__":
     main()
