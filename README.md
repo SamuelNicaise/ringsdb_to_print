@@ -15,7 +15,7 @@ pip install -e .
 ## Usage example
 
 ```bash
-python -m ringsdb_to_print printpdf -u "https://ringsdb.com/decklist/view/6936/caldara-2-0-1.0 -o deck.pdf"
+python -m ringsdb_to_print pdf -u "https://ringsdb.com/decklist/view/6936/caldara-2-0-1.0" -o deck.pdf
 ```
 
 This will create `deck.pdf` containing all card images in the deck, sized 63.5x88mm.
